@@ -1,6 +1,6 @@
 {
-  "name": "model_project",
-  "version": "0.0.0",
+  "name": "morfeus-ia-integration-backend",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",

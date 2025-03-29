@@ -13,7 +13,7 @@ import router from '@adonisjs/core/services/router'
 const usersController = () => import("#controllers/users_controller")
 
 router.group(() => {
-  router.get('/', ({ response }) => { response.status(200).send("Projeto Modelo") }),
+  router.get('/', ({ response }) => { response.status(200).send("Morfeus IA Integration") }),
 
   router.group(() => {
     router.post('/', [usersController, 'create']),
