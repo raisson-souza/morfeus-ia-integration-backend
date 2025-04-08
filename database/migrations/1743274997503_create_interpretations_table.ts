@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('title').notNullable()
       table.string('dream_ontopsychology_interpretation').nullable()
       table.string('dream_psychoanalysis_interpretation').nullable()
-      table.integer('interpretation_image_id').unsigned().references("id").inTable("interpretation_images").onDelete('CASCADE').nullable()
+      table.string('image_path').nullable()
       table.integer('direct_access_id').unsigned().references("id").inTable("direct_accesses").onDelete('CASCADE').nullable()
       table.integer('morfeus_access_id').unsigned().references("id").inTable("morfeus_accesses").onDelete('CASCADE').nullable()
       table.timestamp('created_at').defaultTo(this.db.rawQuery('now()').knexQuery).notNullable()

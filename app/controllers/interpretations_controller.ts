@@ -1,6 +1,7 @@
 import { createInterpretationValidator, getInterpretationValidator, listInterpretationValidator } from '#validators/interpretation'
-import { FullInterpretation, InterpretationListed } from '../types/interpretationTypes.js'
 import { inject } from '@adonisjs/core'
+import { InterpretationListed } from '../types/interpretationTypes.js'
+import Interpretation from '#models/interpretation'
 import InterpretationService from '#services/interpretation_service'
 import ResponseSender from '../functions/core/ResponseMessage.js'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -17,7 +18,7 @@ export default class InterpretationsController {
                 dream: dream,
                 title: title,
             })
-            ResponseSender<FullInterpretation>({ response, status: 201, data: interpretation })
+            ResponseSender<Interpretation>({ response, status: 201, data: interpretation })
         }
         catch (ex) {
             ResponseSender<string>({ response, data: ex as Error })
@@ -32,7 +33,7 @@ export default class InterpretationsController {
                 access: access,
                 interpretationId: id,
             })
-            ResponseSender<FullInterpretation>({ response, status: 200, data: interpretation })
+            ResponseSender<Interpretation>({ response, status: 200, data: interpretation })
         }
         catch (ex) {
             ResponseSender<string>({ response, data: ex as Error })

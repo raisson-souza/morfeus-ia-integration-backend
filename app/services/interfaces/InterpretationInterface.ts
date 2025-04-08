@@ -1,10 +1,11 @@
-import { FullInterpretation, InterpretationListed } from "../../types/interpretationTypes.js"
+import { InterpretationListed } from "../../types/interpretationTypes.js"
+import Interpretation from "#models/interpretation"
 
 export default interface InterpretationInterface {
-    CreateDreamInterpretation(model: CreateDreamInterpretationProps): Promise<FullInterpretation>
+    CreateDreamInterpretation(model: CreateDreamInterpretationProps): Promise<Interpretation>
     // RecreateDreamInterpretation()
     // RecreateDreamInterpretationImage()
-    GetDreamInterpretation(model: GetDreamInterpretationProps): Promise<FullInterpretation>
+    GetDreamInterpretation(model: GetDreamInterpretationProps): Promise<Interpretation>
     ListDreamInterpretations(model: ListDreamInterpretationsProps): Promise<InterpretationListed[]>
 }
 

@@ -1,10 +1,9 @@
-import { BaseModel, beforeUpdate, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeUpdate, belongsTo, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 import CustomException from '#exceptions/custom_exception'
 import DirectAccess from './direct_access.js'
-import InterpretationImage from './interpretation_image.js'
 import MorfeusAccess from './morfeus_access.js'
-import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 export default class Interpretation extends BaseModel {
   @column({ isPrimary: true })
@@ -22,11 +21,8 @@ export default class Interpretation extends BaseModel {
   @column()
   declare dreamPsychoanalysisInterpretation: string | null
 
-  @hasOne(() => InterpretationImage)
-  declare interpretationImage: HasOne<typeof InterpretationImage> | null
-
   @column()
-  declare interpretationImageId: number | null
+  declare imagePath: string | null
 
   @belongsTo(() => DirectAccess)
   declare directAccess: BelongsTo<typeof DirectAccess> | null
