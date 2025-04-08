@@ -7,22 +7,27 @@
 |
 */
 
-import { middleware } from './kernel.js'
 import router from '@adonisjs/core/services/router'
 
-const usersController = () => import("#controllers/users_controller")
+const interpretaionsController = () => import("#controllers/interpretations_controller")
+const accessesController = () => import("#controllers/accesses_controller")
 
 router.group(() => {
   router.get('/', ({ response }) => { response.status(200).send("Morfeus IA Integration") }),
 
+  // TODO: Implementar middleware de autenticação dos access
+
   router.group(() => {
-    router.post('/', [usersController, 'create']),
-    router.put('/', [usersController, 'update']).use(middleware.auth({ guards: ['api'] })),
-    router.get('/list', [usersController, 'list']).use(middleware.auth({ guards: ['api'] })),
-    router.get('/:id', [usersController, 'get']).use(middleware.auth({ guards: ['api'] })),
-    router.delete('/:id', [usersController, 'delete']).use(middleware.auth({ guards: ['api'] })),
-    router.post('/login', [usersController, 'login'])
+    router.post('/', [interpretaionsController, 'create'])
+    router.get('/:id', [interpretaionsController, 'get'])
+    router.get('/list', [interpretaionsController, 'list'])
   })
-  .prefix('/users')
+    .prefix('/interpretation')
+
+  router.group(() => {
+    router.post('/direct_access', [accessesController, 'direct'])
+    router.post('/morfeus_access', [accessesController, 'morfeus'])
+  })
+    .prefix('/accesses')
 })
 .prefix('/api')

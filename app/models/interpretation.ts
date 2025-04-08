@@ -14,13 +14,19 @@ export default class Interpretation extends BaseModel {
   declare dream: string
 
   @column()
-  declare dreamInterpretation: string | null
-
-  @hasOne(() => InterpretationImage)
-  declare interpretationImage: HasOne<typeof InterpretationImage>
+  declare title: string
 
   @column()
-  declare interpretationImageId: number
+  declare dreamOntopsychologyInterpretation: string | null
+
+  @column()
+  declare dreamPsychoanalysisInterpretation: string | null
+
+  @hasOne(() => InterpretationImage)
+  declare interpretationImage: HasOne<typeof InterpretationImage> | null
+
+  @column()
+  declare interpretationImageId: number | null
 
   @belongsTo(() => DirectAccess)
   declare directAccess: BelongsTo<typeof DirectAccess> | null
@@ -46,6 +52,13 @@ export default class Interpretation extends BaseModel {
     if (this.morfeusAccessId)
       return this.morfeusAccess!
     throw new CustomException(500, "Não foi possível identificiar o usuário referente na interpretação de sonho.")
+  }
+
+  getRawAccess(): string {
+    const access = this.getAccess()
+    if (access instanceof DirectAccess)
+      return access.key
+    return access.apiKey
   }
 
   @beforeUpdate()
