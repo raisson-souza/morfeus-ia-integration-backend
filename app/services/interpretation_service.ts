@@ -61,7 +61,12 @@ export default class InterpretationService extends GeminiService implements Inte
         access,
         interpretationId,
     }: GetDreamInterpretationProps): Promise<Interpretation> {
-        const interpretation = await Interpretation.find(interpretationId)
+        const interpretation = await Interpretation
+            .query()
+            .where("id", interpretationId)
+            .preload("directAccess")
+            .preload("morfeusAccess")
+            .first()
             .then(result => {
                 if (!result)
                     throw new CustomException(404, "Registro não encontrado.")

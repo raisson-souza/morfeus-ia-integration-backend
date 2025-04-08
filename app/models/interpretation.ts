@@ -25,13 +25,13 @@ export default class Interpretation extends BaseModel {
   declare imagePath: string | null
 
   @belongsTo(() => DirectAccess)
-  declare directAccess: BelongsTo<typeof DirectAccess> | null
+  declare directAccess: BelongsTo<typeof DirectAccess>
 
   @column()
   declare directAccessId: number | null
 
   @belongsTo(() => MorfeusAccess)
-  declare morfeusAccess: BelongsTo<typeof MorfeusAccess> | null
+  declare morfeusAccess: BelongsTo<typeof MorfeusAccess>
 
   @column()
   declare morfeusAccessId: number | null
