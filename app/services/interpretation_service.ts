@@ -60,7 +60,7 @@ export default class InterpretationService extends GeminiService implements Inte
         const interpretation = await Interpretation.find(interpretationId)
             .then(result => {
                 if (!result)
-                    throw new CustomException(404, "Sonho e interpretação não encontrados.")
+                    throw new CustomException(404, "Registro não encontrado.")
                 return result
             })
 
