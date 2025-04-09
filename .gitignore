@@ -27,3 +27,5 @@ yarn-error.log
 # Others
 public/*
 !public/.example
+temp/*
+!temp/.example

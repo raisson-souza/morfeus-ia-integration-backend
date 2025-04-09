@@ -1,5 +1,5 @@
 import { cuid } from "@adonisjs/core/helpers"
-import { GoogleGenAI } from "@google/genai"
+import { GoogleGenAI, createUserContent, createPartFromUri } from "@google/genai"
 import app from "@adonisjs/core/services/app"
 import env from "#start/env"
 import fs from "fs/promises"
@@ -59,6 +59,33 @@ export default class GeminiService {
         catch (ex) {
             console.log("erro ao gerar imagem", ex.message)
             return null
+        }
+    }
+
+    protected async TranscribeAudio(audioFilePath: string, audioFileMimeType: string): Promise<string> {
+        try {
+            const audioFile = await this.model.files.upload({
+                file: audioFilePath,
+                config: {
+                    mimeType: `audio/${ audioFileMimeType }`,
+                },
+            })
+
+            const systemPrompt = "Transcreva o que foi dito no áudio"
+
+            const response = await this.model.models.generateContent({
+                model: "gemini-2.0-flash",
+                contents: createUserContent([
+                    createPartFromUri(audioFile.uri!, audioFile.mimeType!),
+                    systemPrompt,
+                ]),
+            })
+
+            return response.text ?? ""
+        }
+        catch (ex) {
+            console.log("erro ao transcrever áudio", ex.message)
+            return "Não foi possível transcrever o áudio."
         }
     }
 

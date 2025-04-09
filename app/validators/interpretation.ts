@@ -20,8 +20,23 @@ const listInterpretationValidator = vine.compile(
     })
 )
 
+const getInterpretationImageValidator = vine.compile(
+    vine.object({
+        access: vine.string(),
+    })
+)
+
+const interpretationByAudioValidator = vine.compile(
+    vine.object({
+        access: vine.string(),
+        title: vine.string(),
+    })
+)
+
 export {
     createInterpretationValidator,
     getInterpretationValidator,
     listInterpretationValidator,
+    getInterpretationImageValidator,
+    interpretationByAudioValidator,
 }
