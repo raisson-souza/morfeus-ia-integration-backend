@@ -5,7 +5,12 @@ import type { NextFn } from '@adonisjs/core/types/http'
 export default class AccessMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
     try {
-      const access = ctx.request.header("authorization")?.split(" ")[1] ?? null
+      let access = ctx.request.header("authorization") ?? null
+
+      if (access) {
+        if (access.includes("Bearer"))
+          access = access.split(" ")[1]
+      }
 
       if (!access)
         throw new Error()
