@@ -27,6 +27,8 @@ export default class InterpretationService extends GeminiService implements Inte
         const ontopsychologyInterpretation = await this.generateOntopsychologyInterpretation(dream)
         // const ontopsychologyInterpretation = ""
 
+        this.validateInterpretationCreation([psychoanalysisInterpretation, ontopsychologyInterpretation])
+
         const imagePath = await this.generateImageInterpretation(dream)
         // const imagePath = null
 
@@ -136,6 +138,8 @@ export default class InterpretationService extends GeminiService implements Inte
         const ontopsychologyInterpretation = await this.generateOntopsychologyInterpretation(dream)
         // const ontopsychologyInterpretation = ""
 
+        this.validateInterpretationCreation([psychoanalysisInterpretation, ontopsychologyInterpretation])
+
         const imagePath = await this.generateImageInterpretation(dream)
         // const imagePath = null
 
@@ -198,5 +202,14 @@ export default class InterpretationService extends GeminiService implements Inte
 
     private async generateImageInterpretation(dream: string): Promise<string | null> {
         return await this.GenerateImage(`${ this.systemInputImage } ${ dream }`)
+    }
+
+    private validateInterpretationCreation(interpretations: string[]) {
+        let errorCount: number = 0
+        interpretations.map(interpretation => {
+            if (interpretation === "Não foi possível gerar a interpretação.") errorCount++
+        })
+        if (errorCount === interpretations.length)
+            throw new CustomException(500, "Houve um erro na geração das interpretações da IA. Tente novamente.")
     }
 }
