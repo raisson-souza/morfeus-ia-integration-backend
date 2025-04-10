@@ -77,14 +77,15 @@ export default class InterpretationService extends GeminiService implements Inte
         access,
     }: ListDreamInterpretationsProps): Promise<InterpretationListed[]> {
         return await Interpretation.query()
-            .fullOuterJoin("direct_access", "direct_access.id", "interpretation.direct_access_id")
-            .fullOuterJoin("morfeus_access", "morfeus_access.id", "interpretation.morfeus_access_id")
-            .where("direct_access.key", access)
-            .orWhere("morfeus_access.api_key", access)
+            .fullOuterJoin("direct_accesses", "direct_accesses.id", "interpretations.direct_access_id")
+            .fullOuterJoin("morfeus_accesses", "morfeus_accesses.id", "interpretations.morfeus_access_id")
+            .where("direct_accesses.key", access)
+            .orWhere("morfeus_accesses.api_key", access)
             .select("interpretations.*")
             .then(result => {
                 return result.map(interpretation => {
                     return {
+                        id: interpretation.id,
                         title: interpretation.title,
                         createdAt: interpretation.createdAt,
                     }
