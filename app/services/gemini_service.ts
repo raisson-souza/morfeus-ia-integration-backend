@@ -5,7 +5,7 @@ import env from "#start/env"
 import fs from "fs/promises"
 
 export default class GeminiService {
-    private model = new GoogleGenAI({ apiKey: env.get("GEMINI_APi_KEY") })
+    private model = new GoogleGenAI({ apiKey: env.get("GEMINI_API_KEY") })
 
     protected async GenerateText(systemPrompt: string, userPrompt: string): Promise<string> {
         try {
