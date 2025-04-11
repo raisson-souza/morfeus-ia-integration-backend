@@ -1,0 +1,42 @@
+version: '3'
+services:
+  morfeusiadatabase:
+    image: postgres
+    container_name: morfeusiadatabase 
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - morfeus-ia-network
+
+  morfeusiabackend:
+    build:
+      context: .
+      dockerfile: morfeus_ia_backend.dockerfile
+    restart: always
+    container_name: morfeusiabackend
+    env_file: ".env"
+    ports:
+      - "8000:8000"
+    networks:
+      - morfeus-ia-network
+    depends_on:
+      morfeusiadatabase:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+networks:
+  morfeus-ia-network:
+    driver: bridge
