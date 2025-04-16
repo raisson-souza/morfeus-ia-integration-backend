@@ -85,13 +85,15 @@ export default class InterpretationService extends GeminiService implements Inte
             .orWhere("morfeus_accesses.api_key", access)
             .select("interpretations.*")
             .then(result => {
-                return result.map(interpretation => {
-                    return {
-                        id: interpretation.id,
-                        title: interpretation.title,
-                        createdAt: interpretation.createdAt,
+                const interpretations: Interpretation[] = []
+
+                result.map(interpretation => {
+                    if (interpretation.id) {
+                        interpretations.push(interpretation)
                     }
                 })
+
+                return interpretations
             })
     }
 
