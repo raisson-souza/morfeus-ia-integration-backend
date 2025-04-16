@@ -33,10 +33,24 @@ const interpretationByAudioValidator = vine.compile(
     })
 )
 
+const regenerateInterpretationValidator = vine.compile(
+    vine.object({
+        access: vine.string(),
+    })
+)
+
+const regenerateImageValidator = vine.compile(
+    vine.object({
+        access: vine.string(),
+    })
+)
+
 export {
     createInterpretationValidator,
     getInterpretationValidator,
     listInterpretationValidator,
     getInterpretationImageValidator,
     interpretationByAudioValidator,
+    regenerateInterpretationValidator,
+    regenerateImageValidator,
 }

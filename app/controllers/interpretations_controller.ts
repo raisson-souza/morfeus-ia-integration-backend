@@ -1,4 +1,4 @@
-import { createInterpretationValidator, getInterpretationImageValidator, getInterpretationValidator, interpretationByAudioValidator, listInterpretationValidator } from '#validators/interpretation'
+import { createInterpretationValidator, getInterpretationImageValidator, getInterpretationValidator, interpretationByAudioValidator, listInterpretationValidator, regenerateImageValidator, regenerateInterpretationValidator } from '#validators/interpretation'
 import { inject } from '@adonisjs/core'
 import { InterpretationListed } from '../types/interpretationTypes.js'
 import CustomException from '#exceptions/custom_exception'
@@ -94,6 +94,36 @@ export default class InterpretationsController {
             })
 
             ResponseSender<Interpretation>({ response: response, status: 200, data: interpretation })
+        }
+        catch (ex) {
+            ResponseSender<string>({ response, data: ex as Error })
+        }
+    }
+
+    async regenerateInterpretation({ request, response, params }: HttpContext): Promise<void> {
+        try {
+            const { id } = params
+            const { access } = await request.validateUsing(regenerateInterpretationValidator)
+            const interpretation = await this.interpretationService.RegenerateInterpretation({
+                access: access,
+                interpretationId: id,
+            })
+            ResponseSender<Interpretation>({ response, status: 201, data: interpretation })
+        }
+        catch (ex) {
+            ResponseSender<string>({ response, data: ex as Error })
+        }
+    }
+
+    async regenerateImage({ request, response, params }: HttpContext): Promise<void> {
+        try {
+            const { id } = params
+            const { access } = await request.validateUsing(regenerateImageValidator)
+            const image = await this.interpretationService.RegenerateImage({
+                access: access,
+                interpretationId: id,
+            })
+            ResponseSender<string | null>({ response, status: 201, data: image })
         }
         catch (ex) {
             ResponseSender<string>({ response, data: ex as Error })

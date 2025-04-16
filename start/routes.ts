@@ -22,6 +22,8 @@ router.group(() => {
     router.get('/list', [interpretaionsController, 'list'])
     router.get('/get_interpretation_image/:id', [interpretaionsController, 'getInterpretationImage'])
     router.post('/interpretation_by_audio', [interpretaionsController, 'interpretationByAudio'])
+    router.post('/regenerate_interpretation/:id', [interpretaionsController, 'regenerateInterpretation'])
+    router.post('/regenerate_image/:id', [interpretaionsController, 'regenerateImage'])
   })
     .prefix('/interpretation')
     .use(middleware.auth())

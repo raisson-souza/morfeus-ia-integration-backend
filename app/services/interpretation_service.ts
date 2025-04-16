@@ -7,7 +7,7 @@ import db from "@adonisjs/lucid/services/db"
 import DirectAccess from "#models/direct_access"
 import GeminiService from "./gemini_service.js"
 import Interpretation from "#models/interpretation"
-import InterpretationInterface, { CreateDreamInterpretationProps, GetDreamInterpretationProps, GetInterpretationImageProps, InterpretationByAudioProps, ListDreamInterpretationsProps } from "./interfaces/InterpretationInterface.js"
+import InterpretationInterface, { CreateDreamInterpretationProps, GetDreamInterpretationProps, GetInterpretationImageProps, InterpretationByAudioProps, ListDreamInterpretationsProps, RegenerateImageProps, RegenerateInterpretationProps } from "./interfaces/InterpretationInterface.js"
 import MorfeusAccess from "#models/morfeus_access"
 
 export default class InterpretationService extends GeminiService implements InterpretationInterface {
@@ -165,6 +165,88 @@ export default class InterpretationService extends GeminiService implements Inte
         })
 
         return finalInterpretation!
+    }
+
+    async RegenerateInterpretation({
+        access,
+        interpretationId,
+    }: RegenerateInterpretationProps): Promise<Interpretation> {
+        const interpretation = await Interpretation
+            .query()
+            .where("id", interpretationId)
+            .preload("directAccess")
+            .preload("morfeusAccess")
+            .first()
+
+        if (!interpretation)
+            throw new CustomException(404, "Registro não encontrado.")
+
+        await this.checkAccessAuth(interpretation, access)
+
+        const psychoanalysisInterpretation = await this.generatePsychoanalysisInterpretation(interpretation.dream)
+        interpretation.dreamPsychoanalysisInterpretation = psychoanalysisInterpretation
+
+        const ontopsychologyInterpretation = await this.generateOntopsychologyInterpretation(interpretation.dream)
+        interpretation.dreamOntopsychologyInterpretation = ontopsychologyInterpretation
+
+        this.validateInterpretationCreation([psychoanalysisInterpretation, ontopsychologyInterpretation])
+
+        if (!interpretation.imagePath)
+            interpretation.imagePath = await this.generateImageInterpretation(interpretation.dream)
+
+        await Interpretation.updateOrCreate(
+            { id: interpretation.id },
+            {
+                id: interpretation.id,
+                dream: interpretation.dream,
+                title: interpretation.title,
+                dreamOntopsychologyInterpretation: interpretation.dreamOntopsychologyInterpretation,
+                dreamPsychoanalysisInterpretation: interpretation.dreamPsychoanalysisInterpretation,
+                imagePath: interpretation.imagePath,
+                directAccessId: interpretation.directAccessId,
+                morfeusAccessId: interpretation.morfeusAccessId,
+            }
+        )
+
+        return interpretation
+    }
+
+    async RegenerateImage({
+        access,
+        interpretationId,
+    }: RegenerateImageProps): Promise<string | null> {
+        const interpretation = await Interpretation
+            .query()
+            .where("id", interpretationId)
+            .preload("directAccess")
+            .preload("morfeusAccess")
+            .first()
+
+        if (!interpretation)
+            throw new CustomException(404, "Registro não encontrado.")
+
+        await this.checkAccessAuth(interpretation, access)
+
+        if (interpretation.imagePath)
+            throw new CustomException(400, "A imagem descritiva já foi gerada.")
+
+        interpretation.imagePath = await this.generateImageInterpretation(interpretation.dream)
+
+        await Interpretation.updateOrCreate(
+            { id: interpretation.id },
+            {
+                id: interpretation.id,
+                dream: interpretation.dream,
+                title: interpretation.title,
+                dreamOntopsychologyInterpretation: interpretation.dreamOntopsychologyInterpretation,
+                dreamPsychoanalysisInterpretation: interpretation.dreamPsychoanalysisInterpretation,
+                imagePath: interpretation.imagePath,
+                directAccessId: interpretation.directAccessId,
+                morfeusAccessId: interpretation.morfeusAccessId,
+            }
+        )
+
+        return interpretation.imagePath
     }
 
     private async GetAccess(access: string): Promise<DirectAccess | MorfeusAccess> {

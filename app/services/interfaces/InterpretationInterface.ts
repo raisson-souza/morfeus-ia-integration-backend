@@ -4,8 +4,8 @@ import Interpretation from "#models/interpretation"
 
 export default interface InterpretationInterface {
     CreateDreamInterpretation(model: CreateDreamInterpretationProps): Promise<Interpretation>
-    // RecreateDreamInterpretation()
-    // RecreateDreamInterpretationImage()
+    RegenerateInterpretation(model: RegenerateInterpretationProps): Promise<Interpretation>
+    RegenerateImage(model: RegenerateImageProps): Promise<string | null>
     GetDreamInterpretation(model: GetDreamInterpretationProps): Promise<Interpretation>
     ListDreamInterpretations(model: ListDreamInterpretationsProps): Promise<InterpretationListed[]>
     GetInterpretationImage(model: GetInterpretationImageProps): Promise<string | null>
@@ -36,4 +36,14 @@ export type InterpretationByAudioProps = {
     file: MultipartFile
     access: string
     title: string
+}
+
+export type RegenerateInterpretationProps = {
+    access: string
+    interpretationId: number
+}
+
+export type RegenerateImageProps = {
+    access: string
+    interpretationId: number
 }
